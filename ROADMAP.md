@@ -2,16 +2,19 @@
 
 ## 1. Product shell
 
-- responsive navigation;
-- shared visual language;
-- mock vehicle overview;
-- desktop, tablet and phone validation.
+- [x] responsive navigation;
+- [x] shared visual language;
+- [x] live-capable vehicle overview;
+- [x] desktop, tablet and phone breakpoints;
+- [ ] visual validation in Home Assistant Ingress on all three sizes.
 
 ## 2. Read-only live state
 
-- connection to Belgee X50 HA Integration;
-- overview and device status;
-- reconnect and compatibility feedback.
+- [x] read-only Home Assistant state adapter;
+- [x] overview and device status;
+- [x] WebSocket reconnect and compatibility feedback;
+- [ ] direct versioned Integration → Control Center event transport;
+- [ ] route snapshot replay after backend restart.
 
 ## 3. Trips and maps
 

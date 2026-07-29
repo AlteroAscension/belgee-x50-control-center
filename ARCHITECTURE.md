@@ -26,3 +26,21 @@ provided through the supported Home Assistant application environment.
 
 Security-sensitive implementation and update details are intentionally
 excluded from the public pre-release architecture.
+
+## Implemented preview boundary
+
+The `0.1.0` backend uses the Supervisor-provided Home Assistant API token to
+read `/api/states`, projects only the compact values needed by the UI and
+publishes them over its own Ingress WebSocket. It does not connect directly to
+Android components and does not expose commands.
+
+```text
+Home Assistant state API
+    → async Control Center backend
+    → compact /api/state
+    → /api/ws
+    → responsive read-only UI
+```
+
+This is the Phase 1 shell. Persistent route/trip storage and the dedicated
+Integration transport remain the next implementation boundary.

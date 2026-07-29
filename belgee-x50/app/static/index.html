@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0a1118">
+  <title>Belgee X50</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">X50</span>
+        <span><b>Belgee</b><small>Control Center</small></span>
+      </div>
+      <nav id="nav">
+        <button class="active" data-page="overview"><i>⌂</i><span>Обзор</span></button>
+        <button data-page="navigation"><i>➤</i><span>Навигация</span></button>
+        <button data-page="trips"><i>⌁</i><span>Поездки</span></button>
+        <button data-page="simulator"><i>◎</i><span>Симулятор</span></button>
+        <button data-page="devices"><i>◈</i><span>Устройства</span></button>
+      </nav>
+      <div class="alpha-label">PREVIEW 0.1 · READ ONLY</div>
+    </aside>
+
+    <main>
+      <header>
+        <div>
+          <p class="eyebrow">BELGEE X50</p>
+          <h1 id="page-title">Обзор</h1>
+        </div>
+        <div id="connection" class="connection waiting"><span></span>Подключение…</div>
+      </header>
+
+      <section id="overview" class="page active">
+        <div class="hero card">
+          <div>
+            <p class="muted">Текущее состояние</p>
+            <div class="hero-speed"><strong id="speed">—</strong><span>км/ч</span></div>
+            <div class="hero-meta">
+              <span><b id="odometer">—</b> км пробег</span>
+              <span><b id="range">—</b> км запас</span>
+              <span><b id="ignition">—</b> зажигание</span>
+            </div>
+          </div>
+          <div class="car-visual" aria-label="Belgee X50">
+            <div class="car-glow"></div>
+            <div class="car-body">X50</div>
+          </div>
+        </div>
+        <div class="metric-grid">
+          <article class="card metric"><p>Маршрут</p><strong id="route-progress">—</strong><small>пройдено</small></article>
+          <article class="card metric"><p>FakeGPS</p><strong id="fake-gps">—</strong><small>Navigation</small></article>
+          <article class="card metric"><p>Положение</p><strong id="position">—</strong><small>последняя координата</small></article>
+        </div>
+        <div class="card component-card">
+          <div class="section-head"><div><p class="eyebrow">СВЯЗЬ</p><h2>Компоненты</h2></div><small id="last-updated">Нет данных</small></div>
+          <div id="component-list" class="component-list"></div>
+        </div>
+      </section>
+
+      <section id="navigation" class="page">
+        <div class="empty-state card"><i>➤</i><h2>Навигация</h2><p>Live MapKit state появится здесь после подключения Integration → Control Center transport.</p><span>Следующий этап</span></div>
+      </section>
+      <section id="trips" class="page">
+        <div class="empty-state card"><i>⌁</i><h2>История поездок</h2><p>Хранилище поездок и revisions будет перенесено из проверенного simulator add-on без смешивания ГУ и AVD.</p><span>Следующий этап</span></div>
+      </section>
+      <section id="simulator" class="page">
+        <div class="empty-state card"><i>◎</i><h2>Симулятор</h2><p>Существующий симулятор остаётся рабочим. Миграция начнётся после read-only проверки новой интеграции.</p><span>Legacy работает параллельно</span></div>
+      </section>
+      <section id="devices" class="page">
+        <div class="card component-card">
+          <div class="section-head"><div><p class="eyebrow">ДИАГНОСТИКА</p><h2>Устройства</h2></div></div>
+          <div id="device-details" class="device-details"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="assets/app.js"></script>
+</body>
+</html>

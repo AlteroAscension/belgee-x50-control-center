@@ -1,17 +1,15 @@
 # Belgee X50 Control Center
 
-Responsive Home Assistant application for Belgee X50 / Geely Coolray. The
-project is in early development and is not installable yet.
+Responsive Home Assistant application for Belgee X50 / Geely Coolray.
 
-Planned user-facing areas:
+Version `0.1.0` is the first runnable, read-only Ingress preview. It contains:
 
-- vehicle overview and controls;
-- navigation and FakeGPS status;
-- trip history and maps;
-- refueling history;
-- simulator;
-- devices and connection status;
-- diagnostics and supported updates.
+- responsive desktop/tablet/phone navigation;
+- live vehicle overview;
+- Gateway, Relay, Navigation and HA connection state;
+- reconnection through a read-only WebSocket;
+- compatibility with new Integration IDs and selected legacy entities;
+- explicit placeholders for navigation, trips and simulator migration.
 
 Home Assistant devices, entities and automation actions belong to
 [Belgee X50 HA Integration](https://github.com/AlteroAscension/belgee-x50-ha-integration).
@@ -26,7 +24,23 @@ The current supported simulator remains available in
 Detailed storage, security, update and migration designs are reviewed privately
 until they become stable public contracts.
 
-## Status
+## Install the preview
 
-No add-on release or store entry has been published. The reserved add-on
-directory is not runnable yet.
+Add this GitHub repository to the Home Assistant app/add-on store as a custom
+repository, install **Belgee X50 Control Center** and open its Ingress panel.
+The preview requests only `homeassistant_api`; it does not use host networking,
+privileged mode or direct Relay/Gateway access.
+
+Local domain tests:
+
+```bash
+python -m unittest discover -s belgee-x50/tests -v
+python -m compileall -q belgee-x50/app belgee-x50/tests
+```
+
+## Safety boundary
+
+The preview is intentionally read-only. Pages that would require persistent
+trip storage or vehicle commands are visibly marked as future stages. The
+existing simulator remains the supported test tool until its migration tests
+pass.
