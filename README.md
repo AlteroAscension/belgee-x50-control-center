@@ -2,6 +2,8 @@
 
 Responsive Home Assistant application for Belgee X50 / Geely Coolray.
 
+Open source under the [MIT License](LICENSE).
+
 Version `0.1.0` is the first runnable, read-only Ingress preview. It contains:
 
 - responsive desktop/tablet/phone navigation;
