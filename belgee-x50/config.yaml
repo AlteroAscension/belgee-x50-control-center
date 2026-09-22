@@ -1,6 +1,6 @@
 name: "Belgee X50 Control Center"
 slug: "belgee_x50_control_center"
-version: "0.1.0"
+version: "0.2.0"
 description: "Responsive Belgee X50 live state and diagnostics application"
 url: "https://github.com/AlteroAscension/belgee-x50-control-center"
 arch:

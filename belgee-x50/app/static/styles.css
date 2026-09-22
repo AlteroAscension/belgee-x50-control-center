@@ -88,6 +88,15 @@ h1 { font-size: clamp(28px, 3vw, 40px); margin-bottom: 0; letter-spacing: -.04em
 .device-details dl div { display: flex; justify-content: space-between; gap: 20px; padding: 17px 0; border-top: 1px solid var(--line); }
 .device-details dt { color: var(--muted); }
 .device-details dd { margin: 0; text-align: right; }
+#trips .empty-state { display:none; }
+.trips-layout { display:grid; grid-template-columns:minmax(250px,.7fr) minmax(0,1.6fr); gap:16px; }
+.trip-list-card,.trip-map-card { padding:22px; min-height:540px; }
+.trajectory-list { display:grid; gap:8px; margin-top:20px; max-height:450px; overflow:auto; }
+.trajectory-list button { color:var(--text); text-align:left; border:1px solid var(--line); border-radius:14px; padding:13px; background:rgba(255,255,255,.025); cursor:pointer; }
+.trajectory-list button:hover,.trajectory-list button.active { border-color:var(--accent); background:rgba(67,215,162,.10); }
+.trajectory-list small { display:block; color:var(--muted); margin-top:5px; }
+#trajectory-map { height:460px; border-radius:15px; overflow:hidden; background:#0e1920; }
+#trajectory-note { margin:13px 2px 0; }
 @media (max-width: 900px) {
   .app-shell { grid-template-columns: 1fr; padding-bottom: 76px; }
   .sidebar { position: fixed; z-index: 10; top: auto; bottom: 0; width: 100%; height: 70px; padding: 7px 12px;
@@ -100,6 +109,7 @@ h1 { font-size: clamp(28px, 3vw, 40px); margin-bottom: 0; letter-spacing: -.04em
   .hero { grid-template-columns: 1fr; }
   .car-visual { min-height: 140px; }
   .component-list { grid-template-columns: repeat(2, 1fr); }
+  .trips-layout { grid-template-columns:1fr; }
 }
 @media (max-width: 600px) {
   header { height: auto; align-items: center; }

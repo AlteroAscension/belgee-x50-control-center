@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0a1118">
   <title>Belgee X50</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
@@ -64,6 +65,7 @@
         <div class="empty-state card"><i>➤</i><h2>Навигация</h2><p>Live MapKit state появится здесь после подключения Integration → Control Center transport.</p><span>Следующий этап</span></div>
       </section>
       <section id="trips" class="page">
+        <div class="trips-layout"><div class="card trip-list-card"><div class="section-head"><div><p class="eyebrow">STEERING · CAN</p><h2>Траектории поездок</h2></div></div><div id="trajectory-list" class="trajectory-list"><p class="muted">Нет сохранённых траекторий</p></div></div><div class="card trip-map-card"><div id="trajectory-map" aria-label="Карта траектории"></div><p id="trajectory-note" class="muted">Выберите поездку. Разрывы телеметрии отображаются отдельными линиями.</p></div></div>
         <div class="empty-state card"><i>⌁</i><h2>История поездок</h2><p>Хранилище поездок и revisions будет перенесено из проверенного simulator add-on без смешивания ГУ и AVD.</p><span>Следующий этап</span></div>
       </section>
       <section id="simulator" class="page">
@@ -77,6 +79,7 @@
       </section>
     </main>
   </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script type="module" src="assets/app.js"></script>
 </body>
 </html>

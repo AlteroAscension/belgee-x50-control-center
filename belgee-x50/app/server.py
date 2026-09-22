@@ -14,6 +14,7 @@ from typing import Any
 from aiohttp import ClientError, ClientSession, ClientTimeout, WSMsgType, web
 
 from model import project_states
+from trajectory_store import TrajectoryStore
 
 ROOT = Path(__file__).parent
 STATIC = ROOT / "static"
@@ -26,10 +27,11 @@ LOG = logging.getLogger("belgee_x50.control_center")
 class StateSource:
     """Fetch and cache Home Assistant state through the Supervisor API."""
 
-    def __init__(self) -> None:
+    def __init__(self, trajectories: TrajectoryStore) -> None:
         self.session: ClientSession | None = None
         self.state: dict[str, Any] = project_states([])
         self.error: str | None = "waiting for Home Assistant"
+        self.trajectories = trajectories
 
     async def start(self) -> None:
         self.session = ClientSession(timeout=ClientTimeout(total=8))
@@ -53,7 +55,7 @@ class StateSource:
         except (ClientError, asyncio.TimeoutError, RuntimeError, ValueError) as error:
             self.error = str(error)
             self.state = {**self.state, "available": False}
-        return {**self.state, "error": self.error}
+        return {**self.state, "error": self.error, "trajectories": self.trajectories.list()}
 
 
 async def index(_: web.Request) -> web.FileResponse:
@@ -73,7 +75,7 @@ async def health(request: web.Request) -> web.Response:
         {
             "status": "ok",
             "service": "belgee-x50-control-center",
-            "version": "0.1.0",
+            "version": "0.2.0",
             "ha_connected": source.error is None,
             "mode": "read-only",
         }
@@ -83,6 +85,14 @@ async def health(request: web.Request) -> web.Response:
 async def state(request: web.Request) -> web.Response:
     source: StateSource = request.app["source"]
     return web.json_response(await source.update())
+
+async def trajectories_endpoint(request: web.Request) -> web.Response:
+    return web.json_response({"trajectories": request.app["trajectories"].list()})
+
+async def trajectory(request: web.Request) -> web.Response:
+    payload = request.app["trajectories"].get(request.match_info["trajectory_id"])
+    if payload is None: raise web.HTTPNotFound()
+    return web.json_response(payload)
 
 
 async def websocket(request: web.Request) -> web.WebSocketResponse:
@@ -111,15 +121,21 @@ async def websocket(request: web.Request) -> web.WebSocketResponse:
 
 async def create_app() -> web.Application:
     app = web.Application()
-    source = StateSource()
+    trajectories = TrajectoryStore(HA_API, SUPERVISOR_TOKEN)
+    await trajectories.start()
+    source = StateSource(trajectories)
     await source.start()
     app["source"] = source
+    app["trajectories"] = trajectories
     app.on_cleanup.append(lambda _: source.close())
+    app.on_cleanup.append(lambda _: trajectories.close())
     app.router.add_get("/", index)
     app.router.add_get("/index.html", index)
     app.router.add_get("/assets/{filename}", asset)
     app.router.add_get("/api/health", health)
     app.router.add_get("/api/state", state)
+    app.router.add_get("/api/trajectories", trajectories_endpoint)
+    app.router.add_get("/api/trajectories/{trajectory_id}", trajectory)
     app.router.add_get("/api/ws", websocket)
     return app
 

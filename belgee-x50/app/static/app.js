@@ -3,6 +3,8 @@ const titles = {
   overview: "Обзор", navigation: "Навигация", trips: "Поездки",
   simulator: "Симулятор", devices: "Устройства",
 };
+let trajectoryMap, trajectoryLayer, selectedTrajectory;
+let trajectoryItems = [];
 
 for (const button of document.querySelectorAll("#nav button")) {
   button.addEventListener("click", () => {
@@ -69,6 +71,49 @@ function render(data) {
       <div><dt>Режим приложения</dt><dd>Только чтение</dd></div>
       <div><dt>Схема UI</dt><dd>${data.schema || "—"}</dd></div>
     </dl>`;
+  trajectoryItems = data.trajectories || [];
+  renderTrajectoryList(trajectoryItems);
+}
+
+function api(path) { return `${location.pathname.replace(/\/?$/, "/")}${path.replace(/^\//, "")}`; }
+function renderTrajectoryList(items) {
+  const list = $("trajectory-list");
+  if (!list) return;
+  if (!items.length) { list.innerHTML = '<p class="muted">Нет сохранённых траекторий</p>'; return; }
+  list.innerHTML = items.map((item) => `<button data-trajectory="${item.id}" class="${item.id === selectedTrajectory ? "active" : ""}"><b>${new Date(item.started_at_ms || item.observed_at_ms || 0).toLocaleString("ru-RU")}</b><small>${fmt(item.distance_m, 1)} м · ${item.point_count || 0} точек · ${item.segment_count || 1} фрагм.</small></button>`).join("");
+  list.querySelectorAll("button").forEach((button) => button.onclick = () => loadTrajectory(button.dataset.trajectory));
+}
+async function loadTrajectory(id) {
+  const response = await fetch(api(`/api/trajectories/${encodeURIComponent(id)}`));
+  if (!response.ok) return;
+  selectedTrajectory = id; drawTrajectory(await response.json()); renderTrajectoryList(trajectoryItems);
+}
+function ensureTrajectoryMap() {
+  if (trajectoryMap || !window.L) return;
+  trajectoryMap = L.map("trajectory-map");
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(trajectoryMap);
+  trajectoryLayer = L.layerGroup().addTo(trajectoryMap); trajectoryMap.setView([55.75, 37.62], 10);
+}
+function drawTrajectory(payload) {
+  ensureTrajectoryMap(); if (!trajectoryMap) return;
+  trajectoryLayer.clearLayers();
+  const trajectory = payload.trajectory || {}, anchor = trajectory.anchor || {};
+  if (!anchor.has_anchor || !Number.isFinite(Number(anchor.start_latitude)) || !Number.isFinite(Number(anchor.start_longitude))) {
+    $("trajectory-note").textContent = "У этой поездки нет GPS/маршрутной привязки: сохранены только относительные точки."; return;
+  }
+  const lat0 = Number(anchor.start_latitude), lon0 = Number(anchor.start_longitude), bearing = Number(anchor.start_bearing_deg) * Math.PI / 180;
+  const segments = new Map();
+  for (const point of trajectory.points || []) {
+    const x = Number(point.x_m), y = Number(point.y_m); if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+    const east = x * Math.cos(bearing) - y * Math.sin(bearing), north = x * Math.sin(bearing) + y * Math.cos(bearing);
+    const lat = lat0 + north / 111320, lon = lon0 + east / (111320 * Math.cos(lat0 * Math.PI / 180));
+    const segment = Number.isFinite(Number(point.segment_id)) ? Number(point.segment_id) : 0;
+    if (!segments.has(segment)) segments.set(segment, []); segments.get(segment).push([lat, lon]);
+  }
+  const bounds = [];
+  for (const points of segments.values()) { if (!points.length) continue; L.polyline(points, { color:"#d946ef", weight:5, opacity:.94, lineCap:"round" }).addTo(trajectoryLayer); bounds.push(...points); }
+  if (bounds.length) trajectoryMap.fitBounds(bounds, { padding:[24,24], maxZoom:17 });
+  $("trajectory-note").textContent = `Точек: ${trajectory.points?.length || 0}; фрагментов: ${segments.size}. Между фрагментами линия намеренно не проводится.`;
 }
 
 function connect() {
