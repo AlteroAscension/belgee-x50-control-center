@@ -75,7 +75,7 @@ async def health(request: web.Request) -> web.Response:
         {
             "status": "ok",
             "service": "belgee-x50-control-center",
-            "version": "0.2.0",
+            "version": "0.2.1",
             "ha_connected": source.error is None,
             "mode": "read-only",
         }

@@ -4,14 +4,15 @@ Responsive Home Assistant application for Belgee X50 / Geely Coolray.
 
 Open source under the [MIT License](LICENSE).
 
-Version `0.1.0` is the first runnable, read-only Ingress preview. It contains:
+Version `0.2.1` is a read-only Ingress preview. It contains:
 
 - responsive desktop/tablet/phone navigation;
 - live vehicle overview;
 - Gateway, Relay, Navigation and HA connection state;
 - reconnection through a read-only WebSocket;
 - compatibility with new Integration IDs and selected legacy entities;
-- explicit placeholders for navigation, trips and simulator migration.
+- retained trajectory snapshots with HTTP recovery after reconnection;
+- explicit placeholders for the remaining navigation and simulator migration.
 
 Home Assistant devices, entities and automation actions belong to
 [Belgee X50 HA Integration](https://github.com/AlteroAscension/belgee-x50-ha-integration).
